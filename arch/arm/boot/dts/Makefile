@@ -463,6 +463,7 @@ dtb-$(CONFIG_SOC_TI81XX) += \
 	dm8148-t410.dtb \
 	dm8168-evm.dtb
 dtb-$(CONFIG_SOC_AM33XX) += \
+	hudson.dtb \
 	am335x-baltos-ir5221.dtb \
 	am335x-base0033.dtb \
 	am335x-bone.dtb \
