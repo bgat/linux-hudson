@@ -40,9 +40,9 @@ override_dh_auto_build:
 _do_kernel_install:
 	mkdir -p $(DESTDIR)/boot
 	cp arch/arm/boot/zImage $(DESTDIR)/boot
-	ln -s zImage $(DESTDIR)/boot/vmlinuz-$(KREL)
 	cp System.map $(DESTDIR)/boot/System.map-$(KREL)
-	gzip --stdout config > $(DESTDIR)/boot/config.gz
+#	gzip --stdout config > $(DESTDIR)/boot/config.gz
+#	ln -s zImage $(DESTDIR)/boot/vmlinuz-$(KREL)
 
 .PHONY: _do_modules_install
 _do_modules_install:
