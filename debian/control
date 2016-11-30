@@ -2,7 +2,7 @@ Source: linux-4.4.35-hudson
 Section: kernel
 Priority: optional
 Maintainer: Bill Gatliff <bgat@billgatliff.com>
-Build-Depends: bc, kmod, cpio 
+Build-Depends: bc, kmod, cpio, debhelper (>= 9)
 Standards-Version: 3.8.4
 Homepage: http://www.kernel.org/
 
@@ -19,13 +19,13 @@ Provides: dtb-hudson
 Architecture: any
 Description: dtb for Hudson
  This package provides the device tree blob (DTB) file
- from the Linux kernel, version 4.4.35-hudson on ${kernel:debarch}
+ from the Linux kernel, version 4.4.35-hudson
 
 Package: linux-headers-4.4.35-hudson
 Provides: linux-headers, linux-headers-2.6, linux-headers-hudson
 Architecture: any
-Description: Linux kernel headers for 4.4.35-hudson on ${kernel:debarch}
- This package provides kernel header files for 4.4.35-hudson on ${kernel:debarch}
+Description: Linux kernel headers for 4.4.35-hudson
+ This package provides kernel header files for 4.4.35-hudson
  .
  This is useful for people who need to build external modules
 
