@@ -5,6 +5,7 @@ Maintainer: Bill Gatliff <bgat@billgatliff.com>
 Build-Depends: bc, kmod, cpio, debhelper (>= 9)
 Standards-Version: 3.9.6
 Homepage: http://www.kernel.org/
+Vcs-Git: https://github.com/bgat/linux-hudson.git
 
 Package: linux-image-4.4.35-hudson
 Provides: linux-image, linux-image-2.6, linux-modules-4.4.35-hudson, linux-image-hudson
