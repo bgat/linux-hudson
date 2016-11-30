@@ -40,7 +40,7 @@ override_dh_auto_build:
 _do_kernel_install:
 	mkdir -p $(DESTDIR)/boot
 	cp arch/arm/boot/zImage $(DESTDIR)/boot
-	ln -s $(DESTDIR)/boot/zImage $(DESTDIR)/boot/vmlinuz-$(KREL)
+	ln -s zImage $(DESTDIR)/boot/vmlinuz-$(KREL)
 	cp System.map $(DESTDIR)/boot/System.map-$(KREL)
 	gzip --stdout config > $(DESTDIR)/boot/config.gz
 
