@@ -3,13 +3,14 @@ Section: kernel
 Priority: optional
 Maintainer: Bill Gatliff <bgat@billgatliff.com>
 Build-Depends: bc, kmod, cpio, debhelper (>= 9)
-Standards-Version: 3.8.4
+Standards-Version: 3.9.6
 Homepage: http://www.kernel.org/
 
 Package: linux-image-4.4.35-hudson
 Provides: linux-image, linux-image-2.6, linux-modules-4.4.35-hudson, linux-image-hudson
 Suggests: linux-firmware-image-4.4.35-hudson
 Architecture: any
+Depends: ${misc:Depends}
 Description: Linux kernel, version 4.4.35-hudson
  This package contains the Linux kernel, modules and corresponding other
  files, version: 4.4.35-hudson.
@@ -17,6 +18,7 @@ Description: Linux kernel, version 4.4.35-hudson
 Package: dtb-4.4.35-hudson
 Provides: dtb-hudson
 Architecture: any
+Depends: ${misc:Depends}
 Description: dtb for Hudson
  This package provides the device tree blob (DTB) file
  from the Linux kernel, version 4.4.35-hudson
@@ -24,6 +26,7 @@ Description: dtb for Hudson
 Package: linux-headers-4.4.35-hudson
 Provides: linux-headers, linux-headers-2.6, linux-headers-hudson
 Architecture: any
+Depends: ${misc:Depends}
 Description: Linux kernel headers for 4.4.35-hudson
  This package provides kernel header files for 4.4.35-hudson
  .
@@ -32,6 +35,7 @@ Description: Linux kernel headers for 4.4.35-hudson
 Package: linux-firmware-image-4.4.35-hudson
 Provides: linux-firmware-image-hudson
 Architecture: all
+Depends: ${misc:Depends}
 Description: Linux kernel firmware, version 4.4.35-hudson
  This package contains firmware from the Linux kernel, version 4.4.35-hudson.
 
@@ -39,6 +43,7 @@ Package: linux-kernel-headers-4.4.35-hudson
 Section: devel
 Provides: linux-kernel-headers, linux-kernel-headers-hudson
 Architecture: any
+Depends: ${misc:Depends}
 Description: Linux support headers for userspace development targeting Hudson
  This package provides userspaces headers from the Linux kernel.  These headers
  are used by the installed headers for GNU glibc and other system libraries.
