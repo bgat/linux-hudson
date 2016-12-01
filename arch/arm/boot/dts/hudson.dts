@@ -32,8 +32,8 @@
 /* #include "am33xx-pruss-uio.dtsi" */
 
 / {
-	model = "TI AM335x BeagleBone";
-	compatible = "ti,am335x-bone", "ti,am33xx";
+	model = "SignalScape AVP";
+	compatible = "signalscape,avp", "ti,omap36xx", "ti,omap3";
 };
 
 &ldo3_reg {
