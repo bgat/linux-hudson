@@ -1,4 +1,4 @@
-Source: linux-4.4.35-hudson
+Source: linux-4.4.38-hudson
 Section: kernel
 Priority: optional
 Maintainer: Bill Gatliff <bgat@billgatliff.com>
@@ -7,39 +7,39 @@ Standards-Version: 3.9.6
 Homepage: http://www.kernel.org/
 Vcs-Git: https://github.com/bgat/linux-hudson.git
 
-Package: linux-image-4.4.35-hudson
-Provides: linux-image, linux-image-2.6, linux-modules-4.4.35-hudson, linux-image-hudson
-Suggests: linux-firmware-image-4.4.35-hudson
+Package: linux-image-4.4.38-hudson
+Provides: linux-image, linux-image-2.6, linux-modules-4.4.38-hudson, linux-image-hudson
+Suggests: linux-firmware-image-4.4.38-hudson
 Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends}
-Description: Linux kernel, version 4.4.35-hudson
+Description: Linux kernel, version 4.4.38-hudson
  This package contains the Linux kernel, modules and corresponding other
- files, version: 4.4.35-hudson.
+ files, version: 4.4.38-hudson.
 
-Package: dtb-4.4.35-hudson
+Package: dtb-4.4.38-hudson
 Provides: dtb-hudson
 Architecture: any
 Depends: ${misc:Depends}
 Multi-Arch: same
 Description: dtb for Hudson
  This package provides the device tree blob (DTB) file
- from the Linux kernel, version 4.4.35-hudson
+ from the Linux kernel, version 4.4.38-hudson
 
-Package: linux-firmware-image-4.4.35-hudson
+Package: linux-firmware-image-4.4.38-hudson
 Provides: linux-firmware-image-hudson
 Architecture: all
 Depends: ${misc:Depends}
-Description: Linux kernel firmware, version 4.4.35-hudson
- This package contains firmware from the Linux kernel, version 4.4.35-hudson.
+Description: Linux kernel firmware, version 4.4.38-hudson
+ This package contains firmware from the Linux kernel, version 4.4.38-hudson.
 
-Package: linux-headers-4.4.35-hudson
+Package: linux-headers-4.4.38-hudson
 Provides: linux-headers, linux-headers-2.6, linux-headers-hudson
 Section: devel
 Architecture: all
 Depends: ${misc:Depends}
-Description: Linux kernel headers for 4.4.35-hudson
- This package provides kernel header files for 4.4.35-hudson
+Description: Linux kernel headers for 4.4.38-hudson
+ This package provides kernel header files for 4.4.38-hudson
  .
  This is useful for people who need to build external modules
 
