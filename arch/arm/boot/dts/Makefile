@@ -468,6 +468,8 @@ dtb-$(CONFIG_SOC_AM33XX) += \
 	am335x-base0033.dtb \
 	am335x-bone.dtb \
 	am335x-boneblack.dtb \
+	am335x-bonegreen-modio.dtb \
+	am335x-boneblack-modio.dtb \
 	am335x-siriusDEB.dtb \
 	am57xx-beagle-x15-revb1-ctag.dtb \
 	am335x-boneblack-lcd-ct43.dtb \
