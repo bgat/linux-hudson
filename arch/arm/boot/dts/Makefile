@@ -405,6 +405,7 @@ dtb-$(CONFIG_ARCH_OMAP2) += \
 	omap2420-n810-wimax.dtb \
 	omap2430-sdp.dtb
 dtb-$(CONFIG_ARCH_OMAP3) += \
+	hudson.dtb \
 	am3517-craneboard.dtb \
 	am3517-evm.dtb \
 	am3517_mt_ventoux.dtb \
@@ -463,7 +464,6 @@ dtb-$(CONFIG_SOC_TI81XX) += \
 	dm8148-t410.dtb \
 	dm8168-evm.dtb
 dtb-$(CONFIG_SOC_AM33XX) += \
-	hudson.dtb \
 	am335x-baltos-ir5221.dtb \
 	am335x-base0033.dtb \
 	am335x-bone.dtb \
