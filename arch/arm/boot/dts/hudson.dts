@@ -1,13 +1,9 @@
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
  */
 
 /dts-v1/;
 
 #include "omap36xx.dtsi"
-
 
 / {
 	model = "Signalscape AVP";
@@ -17,95 +13,7 @@
 	};
 };
 
-&gpmc {
-	ranges = <0 0 0x30000000 0x1000000>;	/* CS0: 16MB for NAND */
-};
-
-&mmc1 {
-	interrupts-extended = <&intc 83 &omap3_pmx_core 0x11a>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&mmc1_pins &mmc1_cd>;
-	cd-gpios = <&gpio4 31 IRQ_TYPE_LEVEL_LOW>;		/* gpio127 */
-	vmmc-supply = <&vmmc1>;
-	bus-width = <4>;
-	cap-power-off-card;
-};
-
-&omap3_pmx_core {
-	gpio_key_pins: pinmux_gpio_key_pins {
-		pinctrl-single,pins = <
-			OMAP3_CORE1_IOPAD(0x21d6, PIN_INPUT_PULLUP | MUX_MODE4)	/* mcspi2_clk.gpio_178 */
-			OMAP3_CORE1_IOPAD(0x21dc, PIN_INPUT_PULLUP | MUX_MODE4)	/* mcspi2_cs0.gpio_181 */
-		>;
-	};
-
-	mmc1_pins: pinmux_mmc1_pins {
-		pinctrl-single,pins = <
-			OMAP3_CORE1_IOPAD(0x2144, PIN_OUTPUT | MUX_MODE0)	/* sdmmc1_clk.sdmmc1_clk */
-			OMAP3_CORE1_IOPAD(0x2146, PIN_INPUT | MUX_MODE0)	/* sdmmc1_cmd.sdmmc1_cmd */
-			OMAP3_CORE1_IOPAD(0x2148, PIN_INPUT | MUX_MODE0)	/* sdmmc1_dat0.sdmmc1_dat0 */
-			OMAP3_CORE1_IOPAD(0x214a, PIN_INPUT | MUX_MODE0)	/* sdmmc1_dat1.sdmmc1_dat1 */
-			OMAP3_CORE1_IOPAD(0x214c, PIN_INPUT | MUX_MODE0)	/* sdmmc1_dat2.sdmmc1_dat2 */
-			OMAP3_CORE1_IOPAD(0x214e, PIN_INPUT | MUX_MODE0)	/* sdmmc1_dat3.sdmmc1_dat3 */
-		>;
-	};
-};
-
-&omap3_pmx_wkup {
-	gpio_key_pins_wkup: pinmux_gpio_key_pins_wkup {
-		pinctrl-single,pins = <
-			OMAP3_WKUP_IOPAD(0x2a0a, PIN_INPUT_PULLUP | MUX_MODE4)	/* sys_boot0.gpio_2 */
-			OMAP3_WKUP_IOPAD(0x2a14, PIN_INPUT_PULLUP | MUX_MODE4)	/* sys_boot5.gpio_7 */
-		>;
-	};
-
-	mmc1_cd: pinmux_mmc1_cd {
-		pinctrl-single,pins = <
-			OMAP3_WKUP_IOPAD(0x2a54, PIN_INPUT_PULLUP | MUX_MODE4)	/* reserved.gpio_127 */
-		>;
-	};
-};
-
-&uart1 {
-	interrupts-extended = <&intc 72 &omap3_pmx_core OMAP3_UART1_RX>;
-};
-
-&omap3_pmx_core2 {
-	pinctrl-names = "default";
-	pinctrl-0 = <
-			&hsusb2_2_pins
-	>;
-
-	hsusb2_2_pins: pinmux_hsusb2_2_pins {
-		pinctrl-single,pins = <
-			OMAP3630_CORE2_IOPAD(0x25f0, PIN_OUTPUT | MUX_MODE3)		/* etk_d10.hsusb2_clk */
-			OMAP3630_CORE2_IOPAD(0x25f2, PIN_OUTPUT | MUX_MODE3)		/* etk_d11.hsusb2_stp */
-			OMAP3630_CORE2_IOPAD(0x25f4, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d12.hsusb2_dir */
-			OMAP3630_CORE2_IOPAD(0x25f6, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d13.hsusb2_nxt */
-			OMAP3630_CORE2_IOPAD(0x25f8, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d14.hsusb2_data0 */
-			OMAP3630_CORE2_IOPAD(0x25fa, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d15.hsusb2_data1 */
-		>;
-	};
-
-	w3cbw003c_2_pins: pinmux_w3cbw003c_2_pins {
-		pinctrl-single,pins = <
-			OMAP3630_CORE2_IOPAD(0x25e0, PIN_OUTPUT | MUX_MODE4)		/* etk_d2.gpio_16 */
-		>;
-	};
-};
-
 / {
-	pwmleds {
-		compatible = "pwm-leds";
-
-		overo {
-			label = "overo:blue:COM";
-			pwms = <&twl_pwmled 1 7812500>;
-			max-brightness = <127>;
-			linux,default-trigger = "mmc0";
-		};
-	};
-
 	/* HS USB Port 2 Power */
 	hsusb2_power: hsusb2_power_reg {
 		compatible = "regulator-fixed";
@@ -127,9 +35,7 @@
 
 &omap3_pmx_core {
 	pinctrl-names = "default";
-	pinctrl-0 = <
-			&hsusb2_pins
-	>;
+	pinctrl-0 = <&hsusb2_pins>;
 
 	uart2_pins: pinmux_uart2_pins {
 		pinctrl-single,pins = <
@@ -192,15 +98,11 @@
 		reg = <0x48>;
 		interrupts = <7>; /* SYS_NIRQ cascaded to intc */
 		interrupt-parent = <&intc>;
-
-		twl_audio: audio {
-			compatible = "ti,twl4030-audio";
-			codec {
-			};
-		};
 	};
 };
 
+#include "twl4030.dtsi"
+#include "twl4030_omap3.dtsi"
 
 /* i2c2 pins are used for gpio */
 &i2c2 {
@@ -215,8 +117,6 @@
 	bus-width = <4>;
 };
 
-#include "twl4030.dtsi"
-#include "twl4030_omap3.dtsi"
 
 &twl_gpio {
 	ti,use-leds;
@@ -304,5 +204,124 @@
 			/* HACK: MTDPART_SIZ_FULL=0 so fill to end */
 		};
 	};
+};
+
+
+&omap3_pmx_core2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&hsusb2_2_pins>;
+
+	hsusb2_2_pins: pinmux_hsusb2_2_pins {
+		pinctrl-single,pins = <
+			OMAP3630_CORE2_IOPAD(0x25f0, PIN_OUTPUT | MUX_MODE3)		/* etk_d10.hsusb2_clk */
+			OMAP3630_CORE2_IOPAD(0x25f2, PIN_OUTPUT | MUX_MODE3)		/* etk_d11.hsusb2_stp */
+			OMAP3630_CORE2_IOPAD(0x25f4, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d12.hsusb2_dir */
+			OMAP3630_CORE2_IOPAD(0x25f6, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d13.hsusb2_nxt */
+			OMAP3630_CORE2_IOPAD(0x25f8, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d14.hsusb2_data0 */
+			OMAP3630_CORE2_IOPAD(0x25fa, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d15.hsusb2_data1 */
+		>;
+	};
+};
+
+/ {
+	lis33_3v3: lis33-3v3-reg {
+		compatible = "regulator-fixed";
+		regulator-name = "lis33-3v3-reg";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+	};
+
+	lis33_1v8: lis33-1v8-reg {
+		compatible = "regulator-fixed";
+		regulator-name = "lis33-1v8-reg";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+	};
+};
+
+&omap3_pmx_core {
+	i2c3_pins: pinmux_i2c3_pins {
+		pinctrl-single,pins = <
+			OMAP3_CORE1_IOPAD(0x21c2, PIN_INPUT | MUX_MODE0)	/* i2c3_scl.i2c3_scl */
+			OMAP3_CORE1_IOPAD(0x21c4, PIN_INPUT | MUX_MODE0)	/* i2c3_sda.i2c3_sda */
+		>;
+	};
+
+	uart3_pins: pinmux_uart3_pins {
+		pinctrl-single,pins = <
+			OMAP3_CORE1_IOPAD(0x219e, PIN_INPUT | MUX_MODE0)	/* uart3_rx_irrx.uart3_rx_irrx */
+			OMAP3_CORE1_IOPAD(0x21a0, PIN_OUTPUT | MUX_MODE0)	/* uart3_tx_irtx.uart3_tx_irtx */
+		>;
+	};
+};
+
+&i2c3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c3_pins>;
+	clock-frequency = <100000>;
+
+	/* optional 1K EEPROM with revision information */
+	eeprom@51 {
+		compatible = "atmel,24c01";
+		reg = <0x51>;
+		pagesize = <8>;
+	};
+
+	lis33de: lis33de@1d {
+		compatible = "st,lis33de", "st,lis3lv02d";
+		reg = <0x1d>;
+		Vdd-supply = <&lis33_1v8>;
+		Vdd_IO-supply = <&lis33_3v3>;
+
+		st,click-single-x;
+		st,click-single-y;
+		st,click-single-z;
+		st,click-thresh-x = <10>;
+		st,click-thresh-y = <10>;
+		st,click-thresh-z = <10>;
+		st,irq1-click;
+		st,irq2-click;
+		st,wakeup-x-lo;
+		st,wakeup-x-hi;
+		st,wakeup-y-lo;
+		st,wakeup-y-hi;
+		st,wakeup-z-lo;
+		st,wakeup-z-hi;
+		st,min-limit-x = <120>;
+		st,min-limit-y = <120>;
+		st,min-limit-z = <140>;
+		st,max-limit-x = <550>;
+		st,max-limit-y = <550>;
+		st,max-limit-z = <750>;
+	};
+};
+
+&mmc3 {
+	status = "disabled";
+};
+
+&uart3 {
+	interrupts-extended = <&intc 74 &omap3_pmx_core OMAP3_UART3_RX>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart3_pins>;
+};
+
+/ {
+	vddvario: regulator-vddvario {
+		  compatible = "regulator-fixed";
+		  regulator-name = "vddvario";
+		  regulator-always-on;
+	};
+
+	vdd33a: regulator-vdd33a {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd33a";
+		regulator-always-on;
+	};
+};
+
+
+&lis33de {
+	status = "disabled";
 };
 
