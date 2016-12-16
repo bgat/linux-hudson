@@ -19,9 +19,9 @@ Description: Linux kernel, version 4.4.38-hudson
 
 Package: dtb-4.4.38-hudson
 Provides: dtb-hudson
-Architecture: any
+Architecture: all
 Depends: ${misc:Depends}
-Multi-Arch: same
+Multi-Arch: foreign
 Description: dtb for Hudson
  This package provides the device tree blob (DTB) file
  from the Linux kernel, version 4.4.38-hudson
@@ -29,6 +29,7 @@ Description: dtb for Hudson
 Package: linux-firmware-image-4.4.38-hudson
 Provides: linux-firmware-image-hudson
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends}
 Description: Linux kernel firmware, version 4.4.38-hudson
  This package contains firmware from the Linux kernel, version 4.4.38-hudson.
@@ -37,6 +38,7 @@ Package: linux-headers-4.4.38-hudson
 Provides: linux-headers, linux-headers-2.6, linux-headers-hudson
 Section: devel
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends}
 Description: Linux kernel headers for 4.4.38-hudson
  This package provides kernel header files for 4.4.38-hudson
