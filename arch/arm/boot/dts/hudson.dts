@@ -1,5 +1,4 @@
-/*
- */
+/* -*- mode: dts-mode; */
 
 /dts-v1/;
 
@@ -92,6 +91,14 @@
 			OMAP3_CORE1_IOPAD(0x21c0, PIN_INPUT | MUX_MODE0)		/* i2c2_sda.gpio_183 */
 		>;
 	};
+
+	gpio_u50_pins: pinmux_gpio_u50_pins {
+		pinctrl-single,pins = <>; /* TODO: ? */
+	};
+	
+	gpio_u77_pins: pinmux_gpio_u77_pins {
+		pinctrl-single,pins = <>; /* TODO: ? */
+	};
 };
 
 &i2c1 {
@@ -113,6 +120,27 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c2_pins>;
 	clock-frequency = <2600000>;
+
+	/* "general I/O" */
+	u50: tca6424@23 {
+		reg = <0x23>;
+		compatible = "ti,tca6424";
+		pinctrl-names = "default";
+		/* pinctrl-0 = <&gpio_u50_pins>; */
+		/* interrupt-parent = <...>; */
+		/* interrupts = <... ...>; */
+		status = "okay";
+	};
+
+	/* "peripheral I/O" */
+	u77: tca6424@22 {
+		reg = <0x22>;
+		compatible = "ti,tca6424";
+		/* pinctrl-0 = <&gpio_u77_pins>; */
+		/* interrupt-parent = <...>; */
+		/* interrupts = <... ...>; */
+		status = "okay";
+	};
 };
 
 /* on board microSD slot */
