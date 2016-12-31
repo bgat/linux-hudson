@@ -104,8 +104,13 @@
 &i2c1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_pins>;
-	clock-frequency = <2600000>;
+};
 
+&i2c1 {
+#if 0
+	clock-frequency = <400000>;
+#endif
+	
 	twl: twl@48 {
 		reg = <0x48>;
 		interrupts = <7>; /* SYS_NIRQ cascaded to intc */
@@ -119,27 +124,28 @@
 &i2c2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c2_pins>;
-	clock-frequency = <2600000>;
+	/* clock-frequency = <2600000>; */
+	clock-frequency = <400000>;
 
 	/* "general I/O" */
 	u50: tca6424@23 {
 		reg = <0x23>;
 		compatible = "ti,tca6424";
 		pinctrl-names = "default";
+		gpio-controller;
 		/* pinctrl-0 = <&gpio_u50_pins>; */
 		/* interrupt-parent = <...>; */
 		/* interrupts = <... ...>; */
-		status = "okay";
 	};
 
 	/* "peripheral I/O" */
 	u77: tca6424@22 {
 		reg = <0x22>;
 		compatible = "ti,tca6424";
+		gpio-controller;
 		/* pinctrl-0 = <&gpio_u77_pins>; */
 		/* interrupt-parent = <...>; */
 		/* interrupts = <... ...>; */
-		status = "okay";
 	};
 };
 
@@ -150,7 +156,6 @@
 	vmmc-supply = <&vmmc1>;
 	bus-width = <4>;
 };
-
 
 &twl_gpio {
 	ti,use-leds;
@@ -239,7 +244,6 @@
 		};
 	};
 };
-
 
 &omap3_pmx_core2 {
 	pinctrl-names = "default";
