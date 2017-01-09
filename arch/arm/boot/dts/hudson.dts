@@ -147,25 +147,22 @@
 		/* interrupt-parent = <...>; */
 		/* interrupts = <... ...>; */
 	};
-};
 
-&i2c2 {
 	u15: tmp102@41 {
 		reg = <0x41>;
 		compatible = "tmp102";
-		/* interrupt-parent = ...; */
-		/* interrupts = ...; */
+		/* interrupt-parent = <...>; */
+		/* interrupts = <...>; */
 		status = "okay";
 	};
-};
 
-&i2c2 {
 	u1: adxl346@53 {
 		reg = <0x53>;
 		compatible = "adi,adxl345", "adi,adxl346";
-		/* interrupt-parent = ...; */
-		/* interrupts = ...; */
+		/* interrupt-parent = <...>; */
+		/* interrupts = <...>; */
 		status = "okay";
+	};
 };
 
 /* on board microSD slot */
