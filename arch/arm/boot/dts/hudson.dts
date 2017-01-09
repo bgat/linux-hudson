@@ -149,6 +149,25 @@
 	};
 };
 
+&i2c2 {
+	u15: tmp102@41 {
+		reg = <0x41>;
+		compatible = "tmp102";
+		/* interrupt-parent = ...; */
+		/* interrupts = ...; */
+		status = "okay";
+	};
+};
+
+&i2c2 {
+	u1: adxl346@53 {
+		reg = <0x53>;
+		compatible = "adi,adxl345", "adi,adxl346";
+		/* interrupt-parent = ...; */
+		/* interrupts = ...; */
+		status = "okay";
+};
+
 /* on board microSD slot */
 &mmc1 {
 	pinctrl-names = "default";
@@ -298,13 +317,6 @@
 	pinctrl-0 = <&i2c3_pins>;
 	clock-frequency = <100000>;
 
-	/* optional 1K EEPROM with revision information */
-	eeprom@51 {
-		compatible = "atmel,24c01";
-		reg = <0x51>;
-		pagesize = <8>;
-	};
-
 	lis33de: lis33de@1d {
 		compatible = "st,lis33de", "st,lis3lv02d";
 		reg = <0x1d>;
@@ -358,8 +370,4 @@
 	};
 };
 
-
-&lis33de {
-	status = "disabled";
-};
 
