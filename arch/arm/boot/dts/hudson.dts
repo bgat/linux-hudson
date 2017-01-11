@@ -13,6 +13,22 @@
 };
 
 / {
+	/* TODO: hsusb1_phy needs a regulator?
+	   TODO: can we use this to automatically turn on 3V3_Hub? */
+	reg_vcc3: vcc3 {
+		compatible = "regulator-fixed";
+		regulator-name = "VCC3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+	};
+
+	/* EHCI port */
+	hsusb1_phy: hsusb1_phy {
+		compatible = "usb-nop-xceiv";
+		vcc-supply = <&reg_vcc3>;
+	};
+
 	/* HS USB Port 2 Power */
 	hsusb2_power: hsusb2_power_reg {
 		compatible = "regulator-fixed";
@@ -74,6 +90,11 @@
 		>;
 	};
 
+	hsusb1_pins: pinmux_hsusb1_pins {
+		pinctrl-single,pins = <
+		>;
+	};
+
 	hsusb2_pins: pinmux_hsusb2_pins {
 		pinctrl-single,pins = <
 			OMAP3_CORE1_IOPAD(0x21d4, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* mcspi1_cs3.hsusb2_data2 */
@@ -99,6 +120,15 @@
 	gpio_u77_pins: pinmux_gpio_u77_pins {
 		pinctrl-single,pins = <>; /* TODO: ? */
 	};
+};
+
+&usbhsehci {
+	phys = <&hsusb1_phy>;
+};
+
+&gpio6 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&hsusb1_pins>;
 };
 
 &i2c1 {
@@ -273,6 +303,23 @@
 			OMAP3630_CORE2_IOPAD(0x25f6, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d13.hsusb2_nxt */
 			OMAP3630_CORE2_IOPAD(0x25f8, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d14.hsusb2_data0 */
 			OMAP3630_CORE2_IOPAD(0x25fa, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* etk_d15.hsusb2_data1 */
+		>;
+	};
+
+	hsusb1_2_pins: pinmux_hsusb1_2_pins {
+		pinctrl-single,pins = <
+			OMAP3630_CORE2_IOPAD(0x25d8, PIN_OUTPUT | MUX_MODE3)  /* etk_clk.hsusb1_stp */
+			OMAP3630_CORE2_IOPAD(0x25da, PIN_INPUT | MUX_MODE3)   /* etk_ctl.hsusb1_clk */
+			OMAP3630_CORE2_IOPAD(0x25dc, PIN_INPUT | MUX_MODE3)   /* etk_d0.hsusb1_data0 */
+			OMAP3630_CORE2_IOPAD(0x25de, PIN_INPUT | MUX_MODE3)   /* etk_d1.hsusb1_data1 */
+			OMAP3630_CORE2_IOPAD(0x25e0, PIN_INPUT | MUX_MODE3)   /* etk_d2.hsusb1_data2 */
+			OMAP3630_CORE2_IOPAD(0x25e2, PIN_INPUT | MUX_MODE3)   /* etk_d3.hsusb1_data7 */
+			OMAP3630_CORE2_IOPAD(0x25e4, PIN_INPUT | MUX_MODE3)   /* etk_d4.hsusb1_data4 */
+			OMAP3630_CORE2_IOPAD(0x25e6, PIN_INPUT | MUX_MODE3)   /* etk_d5.hsusb1_data5 */
+			OMAP3630_CORE2_IOPAD(0x25e8, PIN_INPUT | MUX_MODE3)   /* etk_d6.hsusb1_data6 */
+			OMAP3630_CORE2_IOPAD(0x25ea, PIN_INPUT | MUX_MODE3)   /* etk_d7.hsusb1_data3 */
+			OMAP3630_CORE2_IOPAD(0x25ec, PIN_INPUT | MUX_MODE3)   /* etk_d8.hsusb1_dir */
+			OMAP3630_CORE2_IOPAD(0x25ee, PIN_INPUT | MUX_MODE3)   /* etk_d9.hsusb1_nxt */
 		>;
 	};
 };
