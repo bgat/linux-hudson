@@ -105,6 +105,7 @@
 };
 
 / {
+#if 0
 	vddvario: regulator-vddvario {
 		  compatible = "regulator-fixed";
 		  regulator-name = "vddvario";
@@ -116,6 +117,7 @@
 		regulator-name = "vdd33a";
 		regulator-always-on;
 	};
+#endif
 
 	hsusb2_power: hsusb2_power_reg {
 		compatible = "regulator-fixed";
@@ -129,7 +131,7 @@
 	hsusb2_phy: hsusb2_phy {
 		compatible = "usb-nop-xceiv";
 		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;	/* gpio_145 */
-		/* vcc-supply = <&hsusb2_power>; */
+		vcc-supply = <&hsusb2_power>;
 	};
 };
 
@@ -194,12 +196,14 @@
 #include "twl4030.dtsi"
 #include "twl4030_omap3.dtsi"
 
+#if 0
 &vaux2 {
 	regulator-name = "usb_1v8";
 	regulator-min-microvolt = <1800000>;
 	regulator-max-microvolt = <1800000>;
 	regulator-always-on;
 };
+#endif
 
 /* on board microSD slot */
 &mmc1 {
@@ -227,9 +231,11 @@
 };
 
 &gpmc {
-	ranges = <0 0 0x30000000 0x1000000>,	/* CS0 */
-		 <4 0 0x2b000000 0x1000000>,	/* CS4 */
-		 <5 0 0x2c000000 0x1000000>;	/* CS5 */
+	ranges = <0 0 0x30000000 0x1000000>;	/* CS0 */
+#if 0
+	<4 0 0x2b000000 0x1000000>,	/* CS4 */
+	<5 0 0x2c000000 0x1000000>;	/* CS5 */
+#endif
 
 	nand@0,0 {
 		compatible = "ti,omap2-nand";
