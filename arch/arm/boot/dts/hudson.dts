@@ -110,7 +110,7 @@
 / {
 	hsusb2_phy: hsusb2_phy {
 		compatible = "usb-nop-xceiv";
-		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>; /* gpio_145 */
+		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;
 		vcc-supply = <&hsusb2_power>;
 	};
 
@@ -120,7 +120,7 @@
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		startup-delay-us = <70000>;
-		gpio = <&gpio50 18 GPIO_ACTIVE_HIGH>; /* gpio_482 */
+		gpio = <&gpio50 18 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 	};
 };
@@ -155,11 +155,9 @@
 		reg = <0x23>;
 		compatible = "ti,tca6424";
 		gpio-controller;
-#if 0
 		interrupt-controller;
 		interrupt-parent = <&gpio6>;
-		interrupts = <11 IRQ_TYPE_LEVEL_LOW>; /* gpio_171 */
-#endif
+		interrupts = <11>;
 		#gpio-cells = <2>;
 		#interrupt-cells = <2>;
 		status = "okay";
@@ -170,11 +168,9 @@
 		reg = <0x22>;
 		compatible = "ti,tca6424";
 		gpio-controller;
-#if 0
 		interrupt-controller;
 		interrupt-parent = <&gpio6>;
-		interrupts = <11 IRQ_TYPE_LEVEL_LOW>; /* gpio_171 */
-#endif
+		interrupts = <11>;
 		#gpio-cells = <2>;
 		#interrupt-cells = <2>;
 		status = "okay";
@@ -182,10 +178,11 @@
 
 	u15: tmp112@48 {
 		reg = <0x48>;
-		compatible = "tmp112","tmp102";
+		compatible = /* "tmp112", */ "tmp102";
 #if 0
+		/* TODO: the driver doesn't presently support ALERT */
 		interrupt-parent = <&gpio6>;
-		interrupts = <11 IRQ_TYPE_LEVEL_LOW>; /* gpio_171 */
+		interrupts = <11>;
 #endif
 		status = "okay";
 	};
@@ -194,6 +191,7 @@
 		reg = <0x53>;
 		compatible = "adi,adxl345", "adi,adxl346";
 #if 0
+		/* TODO: the driver presently supports only IRQ_TYPE_LEVEL_HIGH */
 		interrupt-parent = <&gpio6>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>; /* gpio_171 */
 #endif
