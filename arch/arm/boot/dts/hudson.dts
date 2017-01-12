@@ -10,6 +10,17 @@
 	chosen {
 		bootargs = "earlyprintk console=ttyO2,115200n8";
 	};
+
+	cpus {
+		cpu@0 {
+			cpu0-supply = <&vcc>;
+		};
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x80000000 0x20000000>; /* 512 MB */
+	};
 };
 
 &omap3_pmx_core {
@@ -78,14 +89,6 @@
 			OMAP3_CORE1_IOPAD(0x21a0, PIN_OUTPUT | MUX_MODE0)	/* uart3_tx_irtx.uart3_tx_irtx */
 		>;
 	};
-
-	gpio_u50_pins: pinmux_gpio_u50_pins {
-		pinctrl-single,pins = <>; /* TODO: ? */
-	};
-	
-	gpio_u77_pins: pinmux_gpio_u77_pins {
-		pinctrl-single,pins = <>; /* TODO: ? */
-	};
 };
 
 &omap3_pmx_core2 {
@@ -105,19 +108,11 @@
 };
 
 / {
-#if 0
-	vddvario: regulator-vddvario {
-		  compatible = "regulator-fixed";
-		  regulator-name = "vddvario";
-		  regulator-always-on;
+	hsusb2_phy: hsusb2_phy {
+		compatible = "usb-nop-xceiv";
+		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>; /* gpio_145 */
+		vcc-supply = <&hsusb2_power>;
 	};
-
-	vdd33a: regulator-vdd33a {
-		compatible = "regulator-fixed";
-		regulator-name = "vdd33a";
-		regulator-always-on;
-	};
-#endif
 
 	hsusb2_power: hsusb2_power_reg {
 		compatible = "regulator-fixed";
@@ -125,23 +120,23 @@
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		startup-delay-us = <70000>;
+		gpio = <&gpio50 18 GPIO_ACTIVE_HIGH>; /* gpio_482 */
 		enable-active-high;
-	};
-
-	hsusb2_phy: hsusb2_phy {
-		compatible = "usb-nop-xceiv";
-		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;	/* gpio_145 */
-		vcc-supply = <&hsusb2_power>;
 	};
 };
 
+&usbhshost {
+	port2-mode = "ehci-phy";
+};
+
 &usbhsehci {
-	phys = <&hsusb2_phy>;
+	phys = <0 &hsusb2_phy>;
 };
 
 &i2c1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_pins>;
+	clock-frequency = <2600000>;
 
 	twl: twl@48 {
 		reg = <0x48>;
@@ -155,40 +150,53 @@
 	pinctrl-0 = <&i2c2_pins>;
 	clock-frequency = <400000>;
 
-	/* "general I/O" */
-	u50: tca6424@23 {
+	/* general i/o u50 */
+	gpio50: tca6424@23 {
 		reg = <0x23>;
 		compatible = "ti,tca6424";
-		pinctrl-names = "default";
 		gpio-controller;
-		/* pinctrl-0 = <&gpio_u50_pins>; */
-		/* interrupt-parent = <...>; */
-		/* interrupts = <... ...>; */
+#if 0
+		interrupt-controller;
+		interrupt-parent = <&gpio6>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>; /* gpio_171 */
+#endif
+		#gpio-cells = <2>;
+		#interrupt-cells = <2>;
+		status = "okay";
 	};
 
-	/* "peripheral I/O" */
-	u77: tca6424@22 {
+	/* peripheral i/o u77 */
+	gpio77: tca6424@22 {
 		reg = <0x22>;
 		compatible = "ti,tca6424";
 		gpio-controller;
-		/* pinctrl-0 = <&gpio_u77_pins>; */
-		/* interrupt-parent = <...>; */
-		/* interrupts = <... ...>; */
+#if 0
+		interrupt-controller;
+		interrupt-parent = <&gpio6>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>; /* gpio_171 */
+#endif
+		#gpio-cells = <2>;
+		#interrupt-cells = <2>;
+		status = "okay";
 	};
 
-	u15: tmp102@41 {
-		reg = <0x41>;
-		compatible = "tmp102";
-		/* interrupt-parent = <...>; */
-		/* interrupts = <...>; */
+	u15: tmp112@48 {
+		reg = <0x48>;
+		compatible = "tmp112","tmp102";
+#if 0
+		interrupt-parent = <&gpio6>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>; /* gpio_171 */
+#endif
 		status = "okay";
 	};
 
 	u1: adxl346@53 {
 		reg = <0x53>;
 		compatible = "adi,adxl345", "adi,adxl346";
-		/* interrupt-parent = <...>; */
-		/* interrupts = <...>; */
+#if 0
+		interrupt-parent = <&gpio6>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>; /* gpio_171 */
+#endif
 		status = "okay";
 	};
 };
@@ -196,25 +204,48 @@
 #include "twl4030.dtsi"
 #include "twl4030_omap3.dtsi"
 
-#if 0
+&vusb3v1 {
+	regulator-name = "vusb3v1";
+	regulator-min-microvolt = <3100000>;
+	regulator-max-microvolt = <3100000>;
+};
+
 &vaux2 {
 	regulator-name = "usb_1v8";
 	regulator-min-microvolt = <1800000>;
 	regulator-max-microvolt = <1800000>;
 	regulator-always-on;
 };
-#endif
 
-/* on board microSD slot */
 &mmc1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&mmc1_pins>;
 	vmmc-supply = <&vmmc1>;
 	bus-width = <4>;
+	status = "okay";
 };
 
-&twl_gpio {
-	ti,use-leds;
+&mmc2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&mmc2_pins>;
+	vmmc-supply = <&vmmc2>;
+	bus-width = <4>;
+	status = "okay";
+};
+
+&uart2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart2_pins>;
+};
+
+&uart3 {
+	interrupts-extended = <&intc 74 &omap3_pmx_core OMAP3_UART3_RX>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart3_pins>;
+};
+
+&mcbsp2 {
+	status = "okay";
 };
 
 &usb_otg_hs {
@@ -226,16 +257,8 @@
 	power = <50>;
 };
 
-&mcbsp2 {
-	status = "okay";
-};
-
 &gpmc {
 	ranges = <0 0 0x30000000 0x1000000>;	/* CS0 */
-#if 0
-	<4 0 0x2b000000 0x1000000>,	/* CS4 */
-	<5 0 0x2c000000 0x1000000>;	/* CS5 */
-#endif
 
 	nand@0,0 {
 		compatible = "ti,omap2-nand";
@@ -271,37 +294,21 @@
 			reg = <0 0x80000>; /* 512KiB */
 		};
 		partition@80000 {
-			label = "U-Boot";
+			label = "u-boot";
 			reg = <0x80000 0x1C0000>; /* 1792KiB */
 		};
 		partition@1c0000 {
-			label = "Environment";
+			label = "env";
 			reg = <0x240000 0x40000>; /* 256KiB */
 		};
 		partition@280000 {
-			label = "Kernel";
+			label = "kernel";
 			reg = <0x280000 0x800000>; /* 8192KiB */
 		};
 		partition@780000 {
-			label = "Filesystem";
+			label = "fs";
 			reg = <0xA80000 0>;
 			/* HACK: MTDPART_SIZ_FULL=0 so fill to end */
 		};
 	};
 };
-
-&mmc3 {
-	status = "disabled";
-};
-
-&uart2 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart2_pins>;
-};
-
-&uart3 {
-	interrupts-extended = <&intc 74 &omap3_pmx_core OMAP3_UART3_RX>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart3_pins>;
-};
-
