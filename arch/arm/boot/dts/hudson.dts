@@ -21,6 +21,85 @@
 		device_type = "memory";
 		reg = <0x80000000 0x20000000>; /* 512 MB */
 	};
+
+	leds {
+		compatible = "gpio-leds";
+		heartbeat {
+			label = "userled1";
+			gpios = <&gpio50 20 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "heartbeat";
+		};
+	};
+
+	usb_eth_en: usb_eth_en {
+		compatible = "regulator-fixed";
+		regulator-name = "usb_eth_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		/* startup-delay-us = <70000>; */
+		gpio = <&gpio50 18 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+	};
+
+	ledpwr_en {
+		compatible = "regulator-fixed";
+		regulator-name = "ledpwr_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio50 11 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
+	gps_en {
+		compatible = "regulator-fixed";
+		regulator-name = "gps_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio50 13 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
+	u56_en {
+		compatible = "regulator-fixed";
+		regulator-name = "7porthub1_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio77 12 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
+	u71_en {
+		compatible = "regulator-fixed";
+		regulator-name = "7porthub2_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio77 9 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
+	u73_en {
+		compatible = "regulator-fixed";
+		regulator-name = "quart1_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio77 13 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
+	u72_en {
+		compatible = "regulator-fixed";
+		regulator-name = "quart2_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio77 8 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
 };
 
 &omap3_pmx_core {
@@ -111,26 +190,16 @@
 	hsusb2_phy: hsusb2_phy {
 		compatible = "usb-nop-xceiv";
 		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;
-		vcc-supply = <&hsusb2_power>;
+		vcc-supply = <&usb_eth_en>;
 	};
-
-	hsusb2_power: hsusb2_power_reg {
-		compatible = "regulator-fixed";
-		regulator-name = "hsusb2_vbus";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-		startup-delay-us = <70000>;
-		gpio = <&gpio50 18 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-	};
-};
-
-&usbhshost {
-	port2-mode = "ehci-phy";
 };
 
 &usbhsehci {
 	phys = <0 &hsusb2_phy>;
+};
+
+&usbhshost {
+	port2-mode = "ehci-phy";
 };
 
 &i2c1 {
