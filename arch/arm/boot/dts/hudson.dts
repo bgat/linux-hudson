@@ -24,10 +24,28 @@
 
 	leds {
 		compatible = "gpio-leds";
-		heartbeat {
+		heartbeat: userled1 {
 			label = "userled1";
 			gpios = <&gpio50 20 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "heartbeat";
+		};
+
+		userled2: userled2 {
+			label = "userled2";
+			gpios = <&gpio50 21 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "none";
+		};
+
+		userled3: userled3 {
+			label = "userled3";
+			gpios = <&gpio50 22 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "none";
+		};
+
+		userled4: userled4 {
+			label = "userled4";
+			gpios = <&gpio50 23 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "none";
 		};
 	};
 
@@ -100,6 +118,26 @@
 		enable-active-high;
 		regulator-always-on;
 	};
+
+	usb_a_top_en {
+		compatible = "regulator-fixed";
+		regulator-name = "usb_a_top_en";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&gpio77 15 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
+	usb_a_bot_en {
+		compatible = "regulator-fixed";
+		regulator-name = "usb_a_bot_en";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&gpio77 16 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
 };
 
 &omap3_pmx_core {
@@ -150,6 +188,15 @@
 			OMAP3_CORE1_IOPAD(0x21da, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* mcspi2_somi.hsusb2_data5 */
 			OMAP3_CORE1_IOPAD(0x21dc, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* mcspi2_cs0.hsusb2_data6 */
 			OMAP3_CORE1_IOPAD(0x21de, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* mcspi2_cs1.hsusb2_data3 */
+		>;
+	};
+
+	uart1_pins: pinmux_uart1_pins {
+		pinctrl-single,pins = <
+			OMAP3_CORE1_IOPAD(0x217c, PIN_INPUT | MUX_MODE0)	/* uart1_tx.gpio_148 */
+			OMAP3_CORE1_IOPAD(0x217e, PIN_INPUT | MUX_MODE0)	/* uart1_rts.gpio_149 */
+			OMAP3_CORE1_IOPAD(0x2180, PIN_INPUT | MUX_MODE0)	/* uart1_cts.gpio_150 */
+			OMAP3_CORE1_IOPAD(0x2182, PIN_INPUT | MUX_MODE0)	/* uart1_rx.gpio_151 */
 		>;
 	};
 
@@ -300,15 +347,23 @@
 	status = "okay";
 };
 
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart1_pins>;
+	status = "okay";
+};
+
 &uart2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart2_pins>;
+	status = "okay";
 };
 
 &uart3 {
 	interrupts-extended = <&intc 74 &omap3_pmx_core OMAP3_UART3_RX>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart3_pins>;
+	status = "okay";
 };
 
 &mcbsp2 {
