@@ -49,12 +49,16 @@
 		};
 	};
 
+#if 0
+	/* TODO: if we brute-force these all on like this, then the
+	associated USB devices don't enumerate properly AND we can't
+	bounce them from userspace */
+
 	usb_eth_en: usb_eth_en {
 		compatible = "regulator-fixed";
 		regulator-name = "usb_eth_en";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
-		/* startup-delay-us = <70000>; */
 		gpio = <&gpio50 18 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 	};
@@ -138,6 +142,7 @@
 		enable-active-high;
 		regulator-always-on;
 	};
+#endif
 };
 
 &omap3_pmx_core {
@@ -237,7 +242,7 @@
 	hsusb2_phy: hsusb2_phy {
 		compatible = "usb-nop-xceiv";
 		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;
-		vcc-supply = <&usb_eth_en>;
+		/* TODO: vcc-supply = <&usb_eth_en>; */
 	};
 };
 
