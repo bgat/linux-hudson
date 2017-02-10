@@ -151,6 +151,7 @@
 
 	i2c1_pins: pinmux_i2c1_pins {
 		pinctrl-single,pins = <
+			OMAP3_CORE1_IOPAD(0x21c8, PIN_INPUT | MUX_MODE4)		/* mcspi1_clk.gpio_171 */
 			OMAP3_CORE1_IOPAD(0x21ba, PIN_INPUT | MUX_MODE0)		/* i2c1_scl.i2c1_scl */
 			OMAP3_CORE1_IOPAD(0x21bc, PIN_INPUT | MUX_MODE0)		/* i2c1_sda.i2c1_sda */
 		>;
@@ -158,8 +159,8 @@
 
 	i2c2_pins: pinmux_i2c2_pins {
 		pinctrl-single,pins = <
-			OMAP3_CORE1_IOPAD(0x21be, PIN_INPUT | MUX_MODE0)		/* i2c2_scl.gpio_168 */
-			OMAP3_CORE1_IOPAD(0x21c0, PIN_INPUT | MUX_MODE0)		/* i2c2_sda.gpio_183 */
+			OMAP3_CORE1_IOPAD(0x21be, PIN_INPUT | MUX_MODE0)		/* i2c2_scl.i2c2_scl */
+			OMAP3_CORE1_IOPAD(0x21c0, PIN_INPUT | MUX_MODE0)		/* i2c2_sda.i2c2_sda */
 		>;
 	};
 
@@ -185,8 +186,14 @@
 		>;
 	};
 
+	/* TODO: break this apart, so that we set up GPIO without requiring USB */
 	hsusb2_pins: pinmux_hsusb2_pins {
 		pinctrl-single,pins = <
+			OMAP3_CORE1_IOPAD(0x216c, PIN_OUTPUT | MUX_MODE4)		/* mcbsp3_dx.gpio_144 */
+			OMAP3_CORE1_IOPAD(0x216e, PIN_OUTPUT | MUX_MODE4)		/* mcbsp3_dr.gpio_145 */
+			OMAP3_CORE1_IOPAD(0x2170, PIN_OUTPUT | MUX_MODE4)		/* mcbsp3_clk.gpio_146 */
+			OMAP3_CORE1_IOPAD(0x2172, PIN_OUTPUT | MUX_MODE4)		/* mcbsp3_fsx.gpio_147 */
+
 			OMAP3_CORE1_IOPAD(0x21d4, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* mcspi1_cs3.hsusb2_data2 */
 			OMAP3_CORE1_IOPAD(0x21d6, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* mcspi2_clk.hsusb2_data7 */
 			OMAP3_CORE1_IOPAD(0x21d8, PIN_INPUT_PULLDOWN | MUX_MODE3)	/* mcspi2_simo.hsusb2_data4 */
@@ -198,26 +205,19 @@
 
 	uart1_pins: pinmux_uart1_pins {
 		pinctrl-single,pins = <
-			OMAP3_CORE1_IOPAD(0x217c, PIN_INPUT | MUX_MODE0)	/* uart1_tx.gpio_148 */
-			OMAP3_CORE1_IOPAD(0x217e, PIN_INPUT | MUX_MODE0)	/* uart1_rts.gpio_149 */
-			OMAP3_CORE1_IOPAD(0x2180, PIN_INPUT | MUX_MODE0)	/* uart1_cts.gpio_150 */
-			OMAP3_CORE1_IOPAD(0x2182, PIN_INPUT | MUX_MODE0)	/* uart1_rx.gpio_151 */
-		>;
-	};
-
-	uart2_pins: pinmux_uart2_pins {
-		pinctrl-single,pins = <
-			OMAP3_CORE1_IOPAD(0x216c, PIN_INPUT | MUX_MODE1)	/* mcbsp3_dx.uart2_cts */
-			OMAP3_CORE1_IOPAD(0x216e, PIN_OUTPUT | MUX_MODE1)	/* mcbsp3_dr.uart2_rts */
-			OMAP3_CORE1_IOPAD(0x2170, PIN_OUTPUT | MUX_MODE1)	/* mcbsp3_clk.uart2_tx */
-			OMAP3_CORE1_IOPAD(0x2172, PIN_INPUT | MUX_MODE1)	/* mcbsp3_fsx.uart2_rx */
+			OMAP3_CORE1_IOPAD(0x217c, PIN_INPUT | MUX_MODE0)		/* uart1_tx.uart1_tx */
+			OMAP3_CORE1_IOPAD(0x217e, PIN_INPUT | MUX_MODE0)		/* uart1_rts.uart1_rts */
+			OMAP3_CORE1_IOPAD(0x2180, PIN_INPUT | MUX_MODE0)		/* uart1_cts.uart1_cts */
+			OMAP3_CORE1_IOPAD(0x2182, PIN_INPUT | MUX_MODE0)		/* uart1_rx.uart1_rx */
 		>;
 	};
 
 	uart3_pins: pinmux_uart3_pins {
 		pinctrl-single,pins = <
-			OMAP3_CORE1_IOPAD(0x219e, PIN_INPUT | MUX_MODE0)	/* uart3_rx_irrx.uart3_rx_irrx */
-			OMAP3_CORE1_IOPAD(0x21a0, PIN_OUTPUT | MUX_MODE0)	/* uart3_tx_irtx.uart3_tx_irtx */
+			OMAP3_CORE1_IOPAD(0x219a, PIN_INPUT | MUX_MODE0)		/* uart3_cts_rctx.uart3_cts_rctx */
+			OMAP3_CORE1_IOPAD(0x219c, PIN_OUTPUT | MUX_MODE0)		/* uart3_rts_sd.uart3_rts_sd */
+			OMAP3_CORE1_IOPAD(0x219e, PIN_INPUT | MUX_MODE0)		/* uart3_rx_irrx.uart3_rx_irrx */
+			OMAP3_CORE1_IOPAD(0x21a0, PIN_OUTPUT | MUX_MODE0)		/* uart3_tx_irtx.uart3_tx_irtx */
 		>;
 	};
 };
@@ -355,12 +355,6 @@
 &uart1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart1_pins>;
-	status = "okay";
-};
-
-&uart2 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart2_pins>;
 	status = "okay";
 };
 
