@@ -49,9 +49,10 @@
 		};
 	};
 
-#if 1
-	/* CAUTION: if we brute-force these all on like this, then we
-	can't subsequently bounce them from userspace */
+#if 0
+	/* TODO: if we brute-force these all on like this, then the
+	associated USB devices don't enumerate properly AND we can't
+	bounce them from userspace */
 
 	usb_eth_en: usb_eth_en {
 		compatible = "regulator-fixed";
@@ -241,8 +242,7 @@
 	hsusb2_phy: hsusb2_phy {
 		compatible = "usb-nop-xceiv";
 		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;
-		/* see CAUTION above regarding vcc-supply! */
-		vcc-supply = <&usb_eth_en>;
+		/* TODO: vcc-supply = <&usb_eth_en>; */
 	};
 };
 
