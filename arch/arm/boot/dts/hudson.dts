@@ -8,7 +8,7 @@
 	model = "Signalscape AVP";
 	compatible = "signalscape,avp", "ti,omap3630", "ti,omap36xx", "ti,omap3";
 	chosen {
-		bootargs = "earlyprintk console=ttyO2,115200n8";
+		bootargs = "earlyprintk console=ttyO2,115200n8 console=ttyS2,115200n8";
 	};
 
 	cpus {
