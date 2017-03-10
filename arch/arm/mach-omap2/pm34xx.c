@@ -481,7 +481,7 @@ int __init omap3_pm_init(void)
 
 	/* IO interrupt is shared with mux code */
 	ret = request_irq(omap_prcm_event_to_irq("io"),
-		_prcm_int_handle_io, IRQF_SHARED | IRQF_NO_SUSPEND, "pm_io",
+		_prcm_int_handle_io, IRQF_SHARED, "pm_io",
 		omap3_pm_init);
 
 	if (ret) {
