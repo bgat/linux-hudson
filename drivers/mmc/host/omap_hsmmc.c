@@ -2868,9 +2868,10 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
 			host->use_adma = true;
 	}
 
-	/* Since we do only SG emulation, we can have as many segs
-	 * as we want. */
-	mmc->max_segs = 1024;
+	/* use only as many segs as will fit into one page,
+	   as per https://marc.info/?l=linux-omap&m=149786501429968
+	   (otherwise we have to deal with NULL from kmalloc()) */
+	mmc->max_segs = 64;
 
 	mmc->max_blk_size = 512;       /* Block Length at max can be 1024 */
 	mmc->max_blk_count = 0xFFFF;    /* No. of Blocks is 16 bits */
