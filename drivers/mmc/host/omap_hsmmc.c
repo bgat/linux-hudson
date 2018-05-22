@@ -2817,13 +2817,6 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
 
 	mmc->ops	= &omap_hsmmc_ops;
 
-	mmc->f_min = OMAP_MMC_MIN_CLOCK;
-
-	if (pdata->max_freq > 0)
-		mmc->f_max = pdata->max_freq;
-	else if (mmc->f_max == 0)
-		mmc->f_max = OMAP_MMC_MAX_CLOCK;
-
 	spin_lock_init(&host->irq_lock);
 	setup_timer(&host->timer, omap_hsmmc_soft_timeout,
 		    (unsigned long)host);
@@ -2834,9 +2827,20 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
 		goto err1;
 	}
 
-	ret = clk_set_rate(host->fclk, mmc->f_max);
-	if (ret)
-		dev_err(&pdev->dev, "failed to set clock to %d (ignored)\n", mmc->f_max);
+	mmc->f_min = OMAP_MMC_MIN_CLOCK;
+
+	if (pdata->max_freq > 0)
+		mmc->f_max = pdata->max_freq;
+	if (mmc->f_max) {
+		ret = clk_set_rate(host->fclk, mmc->f_max);
+		if (ret) {
+			dev_err(&pdev->dev, "failed to set clock to %d (returned: %d)\n", mmc->f_max, ret);
+			goto err1;
+		}
+	}
+	else {
+		mmc->f_max = OMAP_MMC_MAX_CLOCK;
+	}
 
 	if (host->pdata->controller_flags & OMAP_HSMMC_BROKEN_MULTIBLOCK_READ) {
 		dev_info(&pdev->dev, "multiblock reads disabled due to 35xx erratum 2.1.1.128; MMC read performance may suffer\n");
