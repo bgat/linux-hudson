@@ -32,39 +32,40 @@ MKSPEC     := $(srctree)/scripts/package/mkspec
 
 quiet_cmd_src_tar = TAR     $(2).tar.gz
       cmd_src_tar = \
-set -e; \
 if test "$(objtree)" != "$(srctree)"; then \
-	echo >&2; \
-	echo >&2 "  ERROR:"; \
-	echo >&2 "  Building source tarball is not possible outside the"; \
-	echo >&2 "  kernel source tree. Don't set KBUILD_OUTPUT, or use the"; \
-	echo >&2 "  binrpm-pkg or bindeb-pkg target instead."; \
-	echo >&2; \
+	echo "Building source tarball is not possible outside the"; \
+	echo "kernel source tree. Don't set KBUILD_OUTPUT, or use the"; \
+	echo "binrpm-pkg or bindeb-pkg target instead."; \
 	false; \
 fi ; \
 $(srctree)/scripts/setlocalversion --save-scmversion; \
+ln -sf $(srctree) $(2); \
 tar -cz $(RCS_TAR_IGNORE) -f $(2).tar.gz \
-	--transform 's:^:$(2)/:S' $(TAR_CONTENT) $(3); \
-rm -f $(objtree)/.scmversion
+	$(addprefix $(2)/,$(TAR_CONTENT) $(3)); \
+rm -f $(2) $(objtree)/.scmversion
 
 # rpm-pkg
 # ---------------------------------------------------------------------------
-rpm-pkg: FORCE
+rpm-pkg rpm: FORCE
 	$(MAKE) clean
 	$(CONFIG_SHELL) $(MKSPEC) >$(objtree)/kernel.spec
 	$(call cmd,src_tar,$(KERNELPATH),kernel.spec)
-	+rpmbuild $(RPMOPTS) --target $(UTS_MACHINE) -ta $(KERNELPATH).tar.gz \
-	--define='_smp_mflags %{nil}'
+	$(CONFIG_SHELL) $(srctree)/scripts/mkversion > $(objtree)/.tmp_version
+	mv -f $(objtree)/.tmp_version $(objtree)/.version
+	rpmbuild $(RPMOPTS) --target $(UTS_MACHINE) -ta $(KERNELPATH).tar.gz
+	rm $(KERNELPATH).tar.gz kernel.spec
 
 # binrpm-pkg
 # ---------------------------------------------------------------------------
 binrpm-pkg: FORCE
 	$(MAKE) KBUILD_SRC=
 	$(CONFIG_SHELL) $(MKSPEC) prebuilt > $(objtree)/binkernel.spec
-	+rpmbuild $(RPMOPTS) --define "_builddir $(objtree)" --target \
-		$(UTS_MACHINE) -bb $(objtree)/binkernel.spec
+	$(CONFIG_SHELL) $(srctree)/scripts/mkversion > $(objtree)/.tmp_version
+	mv -f $(objtree)/.tmp_version $(objtree)/.version
 
-clean-files += $(objtree)/*.spec
+	rpmbuild $(RPMOPTS) --define "_builddir $(objtree)" --target \
+		$(UTS_MACHINE) -bb $(objtree)/binkernel.spec
+	rm binkernel.spec
 
 # Deb target
 # ---------------------------------------------------------------------------
@@ -96,23 +97,8 @@ bindeb-pkg: FORCE
 	$(MAKE) KBUILD_SRC=
 	+$(call cmd,builddeb)
 
-clean-dirs += $(objtree)/debian/
+# clean-dirs += $(objtree)/debian/
 
-# snap-pkg
-# ---------------------------------------------------------------------------
-snap-pkg: FORCE
-	rm -rf $(objtree)/snap
-	mkdir $(objtree)/snap
-	$(MAKE) clean
-	$(call cmd,src_tar,$(KERNELPATH))
-	sed "s@KERNELRELEASE@$(KERNELRELEASE)@; \
-		s@SRCTREE@$(shell realpath $(KERNELPATH).tar.gz)@" \
-		$(srctree)/scripts/package/snapcraft.template > \
-		$(objtree)/snap/snapcraft.yaml
-	cd $(objtree)/snap && \
-	snapcraft --target-arch=$(UTS_MACHINE)
-
-clean-dirs += $(objtree)/snap/
 
 # tarball targets
 # ---------------------------------------------------------------------------
@@ -132,12 +118,12 @@ quiet_cmd_perf_tar = TAR
       cmd_perf_tar = \
 git --git-dir=$(srctree)/.git archive --prefix=$(perf-tar)/         \
 	HEAD^{tree} $$(cd $(srctree);                               \
-		       echo $$(cat tools/perf/MANIFEST)) \
+		       echo $$(cat $(srctree)/tools/perf/MANIFEST)) \
 	-o $(perf-tar).tar;                                         \
 mkdir -p $(perf-tar);                                               \
 git --git-dir=$(srctree)/.git rev-parse HEAD > $(perf-tar)/HEAD;    \
 (cd $(srctree)/tools/perf;                                          \
-util/PERF-VERSION-GEN $(CURDIR)/$(perf-tar)/);              \
+util/PERF-VERSION-GEN ../../$(perf-tar)/ 2>/dev/null);              \
 tar rf $(perf-tar).tar $(perf-tar)/HEAD $(perf-tar)/PERF-VERSION-FILE; \
 rm -r $(perf-tar);                                                  \
 $(if $(findstring tar-src,$@),,                                     \
@@ -157,7 +143,6 @@ help: FORCE
 	@echo '  binrpm-pkg          - Build only the binary kernel RPM package'
 	@echo '  deb-pkg             - Build both source and binary deb kernel packages'
 	@echo '  bindeb-pkg          - Build only the binary kernel deb package'
-	@echo '  snap-pkg            - Build only the binary kernel snap package (will connect to external hosts)'
 	@echo '  tar-pkg             - Build the kernel as an uncompressed tarball'
 	@echo '  targz-pkg           - Build the kernel as a gzip compressed tarball'
 	@echo '  tarbz2-pkg          - Build the kernel as a bzip2 compressed tarball'

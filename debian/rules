@@ -1,0 +1,82 @@
+#!/usr/bin/make -f
+export DH_VERBOSE=1
+
+DEVICE=hudson
+ARCH:=$(DEB_HOST_GNU_CPU)
+CROSS_COMPILE:=$(DEB_HOST_GNU_TYPE)-
+JOBS:=-j$(shell expr 2 \* $(shell cat /proc/cpuinfo | grep processor | wc -l))
+
+KVER:=$(shell $(MAKE) -s kernelversion)
+KREL=$(shell cut -f 2 -d '"' $(CURDIR)/include/generated/utsrelease.h | cut -f 1 -d '"')
+
+LINUXIMAGE:=$(shell grep "Package: linux-image-$(KVER)" debian/control | cut -d ':' -f 2 | tr -d ' ')
+FIRMWARE:=$(shell grep "Package: linux-firmware-image-$(KVER)" debian/control | cut -d ':' -f 2 | tr -d ' ')
+HEADERS:=$(shell grep "Package: linux-headers-$(KVER)" debian/control | cut -d ':' -f 2 | tr -d ' ')
+
+# TODO: this really belongs elsewhere
+DTB:=$(shell grep "Package: dtb-$(KVER)" debian/control | cut -d ':' -f 2 | tr -d ' ')
+
+CONFIG=config
+KARGS=$(JOBS) KCONFIG_CONFIG=$(CONFIG) ARCH=$(DEB_HOST_GNU_CPU) CROSS_COMPILE=$(DEB_HOST_GNU_TYPE)-
+DESTDIR=debian/$(LINUXIMAGE)
+DESTDIR_FW=debian/$(FIRMWARE)
+DESTDIR_HDR=debian/$(HEADERS)
+DESTDIR_DTB=debian/$(DTB)
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+	$(MAKE) $(KARGS) clean
+	rm -rf $(DESTDIR) $(DESTDIR_FW) $(DESTDIR_HDR) $(DESTDIR_DTB)
+
+override_dh_auto_build:
+	$(MAKE) $(KARGS) olddefconfig
+	$(MAKE) $(KARGS) zImage
+	$(MAKE) $(KARGS) modules
+	$(MAKE) $(KARGS) dtb-y=hudson.dtb dtbs
+
+.PHONY: _do_kernel_install
+_do_kernel_install:
+	mkdir -p $(DESTDIR)/boot
+	cp arch/arm/boot/zImage $(DESTDIR)/boot
+	cp System.map $(DESTDIR)/boot/System.map-$(KREL)
+#	gzip --stdout config > $(DESTDIR)/boot/config.gz
+#	ln -s zImage $(DESTDIR)/boot/vmlinuz-$(KREL)
+
+.PHONY: _do_modules_install
+_do_modules_install:
+	$(MAKE) $(KARGS) INSTALL_MOD_PATH=$(DESTDIR) modules_install
+	rm -f $(DESTDIR)/lib/modules/*/build $(DESTDIR)/lib/modules/*/source
+#	$(foreach module,$(find $(DESTDIR)/lib/modules/ -name "*.ko" -printf '%P\n'),$(OBJCOPY) --strip-debug $(DESTDIR)/lib/modules/$(module))
+#	$(MAKE) INSTALL_MOD_PATH=$(DESTDIR) modules_sign
+
+.PHONY: _do_fw_install
+_do_fw_install:
+	true
+	# $(MAKE) $(KARGS) INSTALL_FW_PATH=$(DESTDIR_FW)/lib/firmware firmware_install
+
+.PHONY: _do_dtb_install
+_do_dtb_install:
+	mkdir -p $(DESTDIR_DTB)/boot
+	cp arch/arm/boot/dts/$(DEVICE).dtb $(DESTDIR_DTB)/boot/dtb
+
+.PHONY: _do_hdr_install
+_do_hdr_install:
+	$(MAKE) headers_check
+	$(MAKE) headers_install INSTALL_HDR_PATH=$(DESTDIR_HDR)/usr
+
+# TODO: maintainer-scripts, i.e. postinst?
+
+override_dh_auto_install: _do_kernel_install _do_modules_install _do_fw_install _do_dtb_install _do_hdr_install
+
+
+override_dh_auto_configure:
+override_dh_auto_test:
+	true # pass
+
+# debhelpers get confused because we're building for arch-$(TARGET),
+# but there are arch-$(HOST) executables in the kernel's scripts/
+# directory; let's just skip the dh_strip helper altogether for now...
+override_dh_strip:
+	true
